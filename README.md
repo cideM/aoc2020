@@ -1,5 +1,21 @@
 # :christmas_tree: Advent of Code 2020 :santa:
 
+## Preparation
+
+Start `cat` and wait for input
+
+```shell
+$ cat > inputs/d2.txt
+```
+
+Reload and run
+
+```shell
+$ echo "d2.hs" | entr -sc "cat inputs/d2.txt | runghc d2.hs"
+```
+
+Skip type checking since you'll get type errors from `runghc` anyway
+
 ## Quick Start
 
 Each puzzle has two parts, and each part will be represented by one `.hs` file. You can run each file like this:
