@@ -32,9 +32,9 @@ $ nix-shell
 [nix-shell:/data/private/aoc2020]$ ghcid ./day_one_part_one.hs
 ```
 
-To install packages update `aoc2020.cabal` and run `cabal2nix . > project.nix`. Since `shell.nix` uses `project.nix` this will update environment in the Nix shell.
+To install packages update `shell.nix`, specifically the `pkgs: [ INSERT_PKGS_HERE ]` part. Package names are like in Hackage but packages come from Nixpkgs.
 
-There are also a few other tools installed for you, such as `ormolu` for formatting, `hlint` for linting and `fast-tags` to generate a `tags` file which Neovim understands.
+There are also a few other tools installed for you, such as `ormolu` for formatting and `hlint` for linting.
 
 ## Progress (1/25)
 
@@ -65,3 +65,9 @@ There are also a few other tools installed for you, such as `ormolu` for formatt
 | 23  | :zzz:   |
 | 24  | :zzz:   |
 | 25  | :zzz:   |
+
+## Compiling
+
+If you're in the Nix shell GHC knows where to find all dependencies.
+
+`$ ghc d1.hs`
