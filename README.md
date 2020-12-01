@@ -1,4 +1,4 @@
-# Advent of Code 2020 in Haskell
+# :christmas_tree: Advent of Code 2020 :santa:
 
 ## Quick Start
 
@@ -19,3 +19,33 @@ $ nix-shell
 To install packages update `aoc2020.cabal` and run `cabal2nix . > project.nix`. Since `shell.nix` uses `project.nix` this will update environment in the Nix shell.
 
 There are also a few other tools installed for you, such as `ormolu` for formatting, `hlint` for linting and `fast-tags` to generate a `tags` file which Neovim understands.
+
+## Progress (1/25)
+
+|     | Done    |
+| --- | ------- |
+| 1   | :bell:  |
+| 2   | :zzz:   |
+| 3   | :zzz:   |
+| 4   | :zzz:   |
+| 5   | :zzz:   |
+| 6   | :zzz:   |
+| 7   | :zzz:   |
+| 8   | :zzz:   |
+| 9   | :zzz:   |
+| 10  | :zzz:   |
+| 11  | :zzz:   |
+| 12  | :zzz:   |
+| 13  | :zzz:   |
+| 14  | :zzz:   |
+| 15  | :zzz:   |
+| 16  | :zzz:   |
+| 17  | :zzz:   |
+| 18  | :zzz:   |
+| 19  | :zzz:   |
+| 20  | :zzz:   |
+| 21  | :zzz:   |
+| 22  | :zzz:   |
+| 23  | :zzz:   |
+| 24  | :zzz:   |
+| 25  | :zzz:   |
