@@ -2,27 +2,12 @@
 
 import Data.Foldable (find)
 
-subsequencesOfSize :: Int -> [a] -> [[a]]
-subsequencesOfSize n xs =
-  let l = length xs
-   in if n > l
-        then []
-        else subsequencesBySize xs !! (l - n)
-  where
-    subsequencesBySize [] = [[[]]]
-    subsequencesBySize (x : xs) =
-      let next = subsequencesBySize xs
-       in zipWith
-            (++)
-            ([] : next)
-            (map (map (x :)) next ++ [[]])
+-- My first attempt was using permutations of length 2 and 3 rather than list
+-- comprehensions, but the 'permutations' function in Data.List was too slow.
+-- You can find it at 'git show de8663455a75656a889d2094fedbaea5e66aa98f'
 
 main :: IO ()
 main = do
   (numbers :: [Int]) <- map read . lines <$> getContents
-  let p1 = subsequencesOfSize 2 numbers
-      p2 = subsequencesOfSize 3 numbers
-  solve p1
-  solve p2
-  where
-    solve = print . fmap product . find ((==) 2020 . sum)
+  print . take 1 $ [ x * y | x <- numbers, y <- numbers, x + y == 2020 ]
+  print . take 1 $ [ x * y * z | x <- numbers, y <- numbers, z <- numbers, x + y + z == 2020 ]
