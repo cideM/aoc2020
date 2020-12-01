@@ -1,2 +1,5 @@
 .envrc
 tags
+dist-newstyle
+/tags
+/result
