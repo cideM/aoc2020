@@ -41,7 +41,7 @@ There are also a few other tools installed for you, such as `ormolu` for formatt
 |     | Done    |
 | --- | ------- |
 | 1   | :bell:  |
-| 2   | :zzz:   |
+| 2   | :bell:  |
 | 3   | :zzz:   |
 | 4   | :zzz:   |
 | 5   | :zzz:   |
