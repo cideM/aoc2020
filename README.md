@@ -36,7 +36,7 @@ To install packages update `shell.nix`, specifically the `pkgs: [ INSERT_PKGS_HE
 
 There are also a few other tools installed for you, such as `ormolu` for formatting and `hlint` for linting.
 
-## Progress (1/25)
+## Progress (2/25)
 
 |     | Done    |
 | --- | ------- |
