@@ -8,5 +8,6 @@ nixpkgs.mkShell {
   buildInputs = with nixpkgs.haskellPackages; [
     ormolu
     hlint
+    nixpkgs.entr
   ];
 }
