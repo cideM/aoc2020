@@ -1,3 +1,6 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [])" -i runghc
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 import Data.Foldable (find)
@@ -9,5 +12,5 @@ import Data.Foldable (find)
 main :: IO ()
 main = do
   numbers <- map read . lines <$> getContents
-  print . take 1 $ [ x * y | x <- numbers, y <- numbers, x + y == 2020 ]
-  print . take 1 $ [ x * y * z | x <- numbers, y <- numbers, z <- numbers, x + y + z == 2020 ]
+  print . take 1 $ [x * y | x <- numbers, y <- numbers, x + y == 2020]
+  print . take 1 $ [x * y * z | x <- numbers, y <- numbers, z <- numbers, x + y + z == 2020]

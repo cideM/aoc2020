@@ -6,8 +6,6 @@ let
 in
 nixpkgs.mkShell {
   buildInputs = with nixpkgs.haskellPackages; [
-    (ghcWithPackages (pkgs: [ ]))
-    ghcid
     ormolu
     hlint
   ];

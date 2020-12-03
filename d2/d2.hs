@@ -1,3 +1,6 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [])" -i "runghc -Wall"
+
 {-# LANGUAGE LambdaCase #-}
 
 import Text.Read (readEither)
@@ -31,7 +34,7 @@ isValidPartTwo (Line lower upper seek input) =
 main :: IO ()
 main =
   sequence . map readLine . lines <$> getContents >>= \case
-    Left error -> print error
+    Left e -> print e
     Right success -> do
       print $ "Valid passwords part one: " <> show (length $ filter isValid success)
       print $ "Valid passwords part two: " <> show (length $ filter isValidPartTwo success)
