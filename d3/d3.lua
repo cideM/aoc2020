@@ -5,24 +5,25 @@
 
 local input = io.read("a")
 
-function toboggan(dx, dy)
-	local y = 1
+local function toboggan(dx, dy)
 	local trees = 0
+	local step = 0
+	local line_number = 0
 
 	for line in input:gmatch("[^\r\n]+") do
-		local x = y == 1 and 1 or 1 + (y - 1) / dy * dx
-		local remainder = x % string.len(line)
-		local x_wrap = remainder == 0 and string.len(line) or remainder
-		local i = 1
-		for c in string.gmatch(line, "[#.]") do
-			if i == x_wrap and c == "#" then 
-				trees = trees + 1 
+		if line_number % dy == 0 then
+			-- You can calculate how far right we should be by
+			-- multiplying the right shift by the step we're
+			-- currently in, not the line number!
+			-- Wrap the right shift by using modulo
+			local seek = (step * dx) % string.len(line) + 1
+			if line:sub(seek, seek) == "#" then
+				trees = trees + 1
 			end
-			i = i + 1
+			step = step + 1
 		end
-		y = y + 1
+		line_number = line_number + 1
 	end
-
 	return trees
 end
 
