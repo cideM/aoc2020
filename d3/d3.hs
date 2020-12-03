@@ -9,10 +9,7 @@ makeMap = map (map convert) . lines
 
 trees :: [[Int]] -> (Int, Int) -> Int
 trees forest (dx, dy) =
-  sum [cycle (forest !! y) !! (dx * adjust y) | y <- [0, dy .. length forest - 1]]
-  where
-    adjust 0 = 0
-    adjust n = n `div` dy
+  sum [cycle (forest !! y) !! x | (x, y) <- zip [0, dx ..] [0, dy .. length forest - 1]]
 
 main :: IO ()
 main = do
