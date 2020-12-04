@@ -28,7 +28,7 @@ $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 | 1   | :bell:  | :bell:  |
 | 2   | :bell:  | :bell:  |
 | 3   | :bell:  | :bell:  |
-| 4   | :bell:  | :zzz:   |
+| 4   | :bell:  | :bell:  |
 | 5   | :zzz:   | :zzz:   |
 | 6   | :zzz:   | :zzz:   |
 | 7   | :zzz:   | :zzz:   |
@@ -50,3 +50,11 @@ $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 | 23  | :zzz:   | :zzz:   |
 | 24  | :zzz:   | :zzz:   |
 | 25  | :zzz:   | :zzz:   |
+
+## Misc
+
+Post code on reddit (use `pbcopy` on MacOS)
+
+```
+$ cat code | sed 's/^/    /' | xsel -b`
+```
