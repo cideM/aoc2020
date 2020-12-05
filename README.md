@@ -29,7 +29,7 @@ $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 | 2   | :bell:  | :bell:  |
 | 3   | :bell:  | :bell:  |
 | 4   | :bell:  | :bell:  |
-| 5   | :zzz:   | :zzz:   |
+| 5   | :bell:  | :zzz:   |
 | 6   | :zzz:   | :zzz:   |
 | 7   | :zzz:   | :zzz:   |
 | 8   | :zzz:   | :zzz:   |
