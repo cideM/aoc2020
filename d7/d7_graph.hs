@@ -5,16 +5,16 @@ import Control.Applicative
 import qualified Data.Graph.Inductive.Graph as G
 import qualified Data.Graph.Inductive.NodeMap as GM
 import Data.Graph.Inductive.PatriciaTree (Gr)
-import Data.List.Extra (nub, trim, unfoldr)
-import Data.Semigroup
+import qualified Data.Graph.Inductive.Query.BFS as BFS
+import Data.List.Extra (sumOn', trim, unfoldr)
 import Text.Parser.Token
 import Text.Trifecta
 
-type Edge = (String, String, Integer)
-
-type Graph = Gr String Integer
-
-parseLine :: Parser ([String], [Edge])
+parseLine ::
+  Parser
+    ( [String], -- Labels for nodes
+      [(String, String, Integer)] -- Edges (from, to, label)
+    )
 parseLine = do
   from <- colorP
   tos <- (bagP `sepBy` comma) <* skipMany (satisfy $ (/=) '\n')
@@ -25,21 +25,13 @@ parseLine = do
     colorP = trim <$> manyTill words' (symbol "bags contain" <|> symbol "bags contain no other bags")
     bagP = (,) <$> natural <*> (trim <$> manyTill words' (symbol "bags" <|> symbol "bag"))
 
-mkGraph :: [([String], [Edge])] -> (Graph, GM.NodeMap String)
-mkGraph xs = GM.mkMapGraph (concatMap fst xs) (concatMap snd xs)
-
-unroll :: (a -> [a]) -> a -> [a]
-unroll fn n = concat $ unfoldr f [n]
+p2 :: Gr String Integer -> (G.Node, Integer) -> [(G.Node, Integer)]
+p2 gr n = concat $ unfoldr f [n]
   where
+    fn (name, label) = concat . replicate (fromIntegral label) $ G.lsuc gr name
     f nodes = case concatMap fn nodes of
       [] -> Nothing
       xs -> Just (xs, xs)
-
-p1 :: Graph -> G.Node -> [G.Node]
-p1 gr = unroll (G.pre gr)
-
-p2 :: Graph -> (G.Node, Integer) -> [(G.Node, Integer)]
-p2 gr = unroll (\(name, label) -> concat . replicate (fromIntegral label) $ G.lsuc gr name)
 
 main :: IO ()
 main = do
@@ -47,7 +39,7 @@ main = do
   case result of
     Failure e -> print e
     Success graphData -> do
-      let (graph, nodemap) = mkGraph graphData
+      let (graph, nodemap) = GM.mkMapGraph (concatMap fst graphData) (concatMap snd graphData)
           ((node, _), _) = GM.mkNode nodemap "shiny gold"
-      print . length . nub $ p1 graph node
-      print . foldMap (Sum . snd) $ p2 graph (node, 1)
+      print . length . filter (\n -> not . null $ BFS.esp n node graph) . filter (node /=) $ G.nodes graph
+      print . sumOn' snd $ p2 graph (node, 1)
