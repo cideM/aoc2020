@@ -21,7 +21,7 @@ Reload and run
 $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 ```
 
-## Progress (6/25)
+## Progress (7/25)
 
 |     | Haskell | Lua     |
 | --- | ------- | ------- |
