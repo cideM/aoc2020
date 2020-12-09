@@ -9,5 +9,6 @@ nixpkgs.mkShell {
     ormolu
     hlint
     nixpkgs.entr
+    nixpkgs.lua53Packages.luacheck
   ];
 }

@@ -21,7 +21,7 @@ Reload and run
 $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 ```
 
-## Progress (7/25)
+## Progress (9/25)
 
 |     | Haskell | Lua     |
 | --- | ------- | ------- |
@@ -33,7 +33,7 @@ $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 | 6   | :bell:  | :zzz:   |
 | 7   | :bell:  | :zzz:   |
 | 8   | :bell:  | :zzz:   |
-| 9   | :zzz:   | :zzz:   |
+| 9   | :zzz:   | :bell:  |
 | 10  | :zzz:   | :zzz:   |
 | 11  | :zzz:   | :zzz:   |
 | 12  | :zzz:   | :zzz:   |
