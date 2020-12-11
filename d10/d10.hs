@@ -19,5 +19,5 @@ main :: IO ()
 main = do
   numbers <- map read . lines <$> getContents
   let numbers' = sort $ 0 : (maximum numbers + 3) : numbers
-  print . product . take 2 . map length . group . sort . filter (flip elem [1, 3]) . zipWith (flip (-)) numbers' $ tail numbers'
+  print . product . map length . group . sort . filter (flip elem [1, 3]) . zipWith (flip (-)) numbers' $ tail numbers'
   print $ p2 numbers'
