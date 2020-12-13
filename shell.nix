@@ -10,5 +10,7 @@ nixpkgs.mkShell {
     hlint
     nixpkgs.entr
     nixpkgs.lua53Packages.luacheck
+    nixpkgs.clojure
+    nixpkgs.clj-kondo
   ];
 }
