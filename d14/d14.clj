@@ -39,16 +39,20 @@
 
 ; Part 1 functions
 (defn apply-mask
-  "Generate a new decimal number from comparing the mask and the given
-  number (transformed into a binary string internally).
-  
-  A new binary number is created based on the part 1 rules. That number
-  is then turned into a decimal number and returned."
+  "Generate a new decimal number by applying the given mask
+  to the given number according to the part 1 rules"
   [mask num]
-  (let [binary (num-to-binary num)
-         masked (map (fn [n m] (if (= m \X) n m)) (seq binary) (seq mask))
-        joined (str/join masked)]
-    (Long/parseLong (str/join masked) 2)))
+  (let [v (vec mask)
+        last-idx (- (count v) 1)]
+       (reduce-kv
+         (fn [acc idx itm]
+           (let [i (- last-idx idx)]
+            (cond
+              (= itm \1) (bit-set acc i)
+              (= itm \0) (bit-clear acc i)
+              :else acc)))
+        num
+        (vec mask))))
 
 (test/deftest apply-mask-test
   (test/is (= 73 (apply-mask "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X" 11)))
@@ -60,7 +64,7 @@
   update the state of the program.
   
   Meant to be used as a reducer function for solve."
-  [{mask :mask regs :registers :as acc} line]
+  [{mask :mask regs :registers} line]
   (if-let
     [new-mask (match-set-mask line)]
     {:mask new-mask :registers regs}
@@ -121,7 +125,7 @@
   update the state of the program.
   
   Meant to be used as a reducer function for solve."
-  [{mask :mask regs :registers :as acc} line]
+  [{mask :mask regs :registers} line]
   (if-let
     [new-mask (match-set-mask line)]
     {:mask new-mask :registers regs}
@@ -135,8 +139,8 @@
 (test/deftest apply-line-p2-test
   (test/is (= {:mask "123" :registers nil} (apply-line-p2 {} "mask = 123")))
   (test/is (=
-             {:mask "000000000000000000000000000000X1001X",})) :registers {26 100, 58 100, 59 100, 27 100}
-             (apply-line-p2 {:mask "000000000000000000000000000000X1001X"} "mem[42] = 100"))
+             {:mask "000000000000000000000000000000X1001X" :registers {26 100, 58 100, 59 100, 27 100}}
+             (apply-line-p2 {:mask "000000000000000000000000000000X1001X"} "mem[42] = 100"))))
 
 ; Read input
 (def input (-> (slurp "./input.txt")
