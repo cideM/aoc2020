@@ -15,7 +15,7 @@
                (#(map edn/read-string %))))
 
 (defn wait-time [dep bus]
-  (let [next-dep (* (+ (quot dep bus) 1) bus)]
+  (let [next-dep (* (inc (quot dep bus)) bus)]
     (- next-dep dep)))
 
 (defn min-by-value [map]

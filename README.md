@@ -41,7 +41,7 @@ $ echo "d2/d2.hs" | entr -sc "cat d2/input.txt | ./d2/d2.hs"
 | 12  | :bell:  | :zzz:   | :zzz:   |
 | 13  | :zzz:   | :zzz:   | :bell:  |
 | 14  | :zzz:   | :zzz:   | :bell:  |
-| 15  | :zzz:   | :zzz:   | :zzz:   |
+| 15  | :zzz:   | :zzz:   | :bell:  |
 | 16  | :zzz:   | :zzz:   | :zzz:   |
 | 17  | :zzz:   | :zzz:   | :zzz:   |
 | 18  | :zzz:   | :zzz:   | :zzz:   |
