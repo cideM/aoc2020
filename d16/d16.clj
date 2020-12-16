@@ -20,8 +20,8 @@
 
 (defn parse-input
   [s]
-  (let [[rules _ yours _ others] (-> (str/split-lines s)
-                                     (#(partition-by (fn [x] (= "" x)) %1)))
+  (let [[rules _ yours _ others] (->> (str/split-lines s)
+                                      (partition-by empty?))
         rules-parsed (into {} (map parse-rule rules))
         others-parsed (->> (map #(str/split %1 #",") others)
                            (drop 1)
@@ -33,6 +33,8 @@
                           first
                           vec)]
     {:rules rules-parsed :others others-parsed :yours yours-parsed}))
+
+(comment (parse-input example))
 
 ; Part 1
 (defn get-invalid-values
@@ -52,10 +54,9 @@
 
 (defn part1
   [input]
-  (let [{:keys [rules others]} (parse-input input)
-        all-invalid (->> (map (partial get-invalid-values rules) others)
-                         (apply concat))]
-    (reduce + all-invalid)))
+  (let [{:keys [rules others]} (parse-input input)]
+    (->> (mapcat #(get-invalid-values rules %) others)
+         (reduce +))))
 
 (def example "class something: 1-3 or 5-7
 row: 6-11 or 33-44
@@ -77,10 +78,9 @@ nearby tickets:
 (defn- get-matching-rules
   "Get the keys of all rules that are valid for the given number n"
   [rules n]
-  (let [matches? (fn [[name [range-a range-b]]]
-                    (let
-                      [range (set (concat (set range-a) (set range-b)))]
-                      (contains? range n)))]
+  ; contains? does not what you expect it to for vectors! Must transform it to
+  ; a set first
+  (let [matches? (fn [[_ [range-a range-b]]] (contains? (set (concat range-a range-b)) n))]
     (->> (filter matches? rules)
          keys)))
 
@@ -92,12 +92,6 @@ nearby tickets:
                  :row []
                  :seat [[1 2 3 4 5]]}
                 5))))
-
-(defn get-slots
-  [rules nums]
-  (->> (map (partial get-matching-rules rules) nums)
-       (map vec)
-       vec))
 
 (defn transpose [a] (apply mapv vector a))
 
@@ -127,18 +121,17 @@ nearby tickets:
   (let [{:keys [rules yours others]} (parse-input input)
         valid? #(empty? (get-invalid-values rules %))
         slot-order (->> (filter valid? others)
-                        (map (partial get-slots rules))
+                        (map (partial map (partial get-matching-rules rules)))
                         transpose
                         (map (partial map set))
                         (map (partial apply clojure.set/intersection))
                         (map-indexed (fn [i v] {:position i :values v}))
-                        (sort-by (fn [v] (count (:values v))))
+                        (sort-by (comp count :values))
                         (reduce
-                          (fn [{:keys [seen slots] :as xs} {:keys [position values] :as obj}]
-                            (let [x' (clojure.set/difference values seen)
-                                  seen' (apply (partial conj seen) x')
-                                  slots' (conj slots {:position position :values x'})]
-                              {:seen seen' :slots slots'}))
+                          (fn [{:keys [seen slots] :as xs} obj]
+                            (let [x' (clojure.set/difference (:values obj) seen)]
+                                 {:seen (concat seen x')
+                                  :slots (conj slots (assoc obj :values x'))}))
                           {:seen #{} :slots []})
                         :slots
                         (sort-by :position)
