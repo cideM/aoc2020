@@ -14,7 +14,7 @@
 ; Shared
 (defn get-neighbours
   [m {:keys [x y z]}]
-  (let [vectors (remove #(= % (list 0 0 0)) (combo/selections [-1 1 0] 3))]
+  (let [vectors (remove #{[0 0 0]} (combo/selections [-1 1 0] 3))]
    (map
      (fn [[dx dy dz]] {:x (+ x dx) :y (+ y dy) :z (+ z dz)})
      vectors)))
