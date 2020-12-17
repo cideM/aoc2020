@@ -1,8 +1,15 @@
 (ns d17 (:require [clojure.string :as str]
-                  [clojure.test :as test]
-                  [clojure.test :as test]
-                  [clojure.edn :as edn]
+                  ; [clojure.test :as test]
                   [clojure.math.combinatorics :as combo]))
+
+; Shared
+(defn parse-input
+  [s]
+  (->> (str/split-lines s)
+       (map-indexed
+         (fn [y row] (map-indexed #(hash-map {:x %1 :y y :z 0} %2) (vec row))))
+       flatten
+       (apply merge)))
 
 (comment (def example-p1
            ".#.
@@ -11,9 +18,8 @@
 
 (comment (def example-map (parse-input example-p1)))
 
-; Shared
 (defn get-neighbours
-  [m {:keys [x y z]}]
+  [{:keys [x y z]}]
   (let [vectors (remove #{[0 0 0]} (combo/selections [-1 1 0] 3))]
    (map
      (fn [[dx dy dz]] {:x (+ x dx) :y (+ y dy) :z (+ z dz)})
@@ -21,7 +27,7 @@
 
 (defn new-state-for-pos
   [m pos]
-  (let [active (->> (get-neighbours m pos)
+  (let [active (->> (get-neighbours pos)
                     (map (partial get m))
                     (filter (partial = \#))
                     count)
@@ -34,7 +40,7 @@
 (defn grow
   [m]
   (->> (keys m)
-       (mapcat (partial get-neighbours m))
+       (mapcat (partial get-neighbours))
        (map #(hash-map % \.))
        (apply merge)
        (#(merge % m))))
@@ -60,14 +66,6 @@
        (filter (partial = \#))
        count))
 
-(defn parse-input
-  [s]
-  (->> (str/split-lines s)
-       (map-indexed
-         (fn [y row] (map-indexed #(hash-map {:x %1 :y y :z 0} %2) (vec row))))
-       flatten
-       (apply merge)))
-
 ; Solve Part 1
 (comment (-> (slurp "./input.txt")
              parse-input
@@ -76,7 +74,7 @@
 
 ; Solve Part 2
 (defn get-neighbours-p2
-  [m {:keys [x y z w] :as pos}]
+  [{:keys [x y z w]}]
   (let [vectors (remove #(= % (list 0 0 0 0)) (combo/selections [-1 1 0] 4))]
    (map
      (fn
