@@ -11,6 +11,6 @@ nixpkgs.mkShell {
     nixpkgs.entr
     nixpkgs.lua53Packages.luacheck
     nixpkgs.clojure
-    nixpkgs.clj-kondo
-  ];
+    hoogle
+  ] ++ (if nixpkgs.stdenv.isDarwin == false then [ nixpkgs.clj-kondo ] else [ ]);
 }
