@@ -3,20 +3,18 @@
 
 {-# LANGUAGE ScopedTypeVariables #-}
 
-import Control.Monad (forM_)
 import Data.Function ((&))
 import Data.List.Extra (groupOn)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import Data.Maybe (catMaybes)
+import Data.Maybe (mapMaybe, fromMaybe)
 import GHC.List (iterate')
 
 -- | Get direct neighbours in all directions
 adjacentp1 :: Map (Int, Int) Char -> (Int, Int) -> [Char]
 adjacentp1 m (row, col) =
-  catMaybes $
-    map
-      (flip Map.lookup m)
+  mapMaybe
+      (`Map.lookup` m)
       [ (row - 1, col - 1),
         (row - 1, col),
         (row - 1, col + 1),
@@ -46,7 +44,7 @@ adjacentp2 m pos =
         & dropWhile dropF -- Discard the new positions until we reach either 'out of bounds', or an empty or occupied seat
         & head -- The 'dropWhile' above will result in a singleton list, so we extract that one value
         & snd -- Discard position, we only want the value
-        & maybe '.' id -- Replace 'out of bounds' with a floor, which is also a 'No Operation' as far as the rules are concerned
+        & fromMaybe '.' -- Replace 'out of bounds' with a floor, which is also a 'No Operation' as far as the rules are concerned
     dropF (_, Nothing) = False
     dropF (_, Just '#') = False
     dropF (_, Just 'L') = False
@@ -73,7 +71,7 @@ newField magicNumber getAdjacents m pos =
         Just c -> case c of
           '.' -> '.'
           'L' ->
-            if not $ '#' `elem` adj
+            if '#' `notElem` adj
               then '#'
               else 'L'
           '#' ->
@@ -89,7 +87,7 @@ printmap m =
   (Map.assocs m :: [((Int, Int), Char)])
     & groupOn row
     & map (map snd)
-    & flip forM_ print
+    & mapM_ print
   where
     row ((r, _), _) = r
 

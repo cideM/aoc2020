@@ -13,7 +13,7 @@ term :: (Monad m, TokenParsing m) => [[Operator m Integer]] -> m Integer
 term table = parens (expr table) <|> natural <?> "simple expression"
 
 binary :: String -> (a -> a -> a) -> Assoc -> Operator Parser a
-binary name fun assoc = Infix (fun <$ symbol name) assoc
+binary name fun = Infix (fun <$ symbol name)
 
 main :: IO ()
 main = interact showSolution
@@ -21,4 +21,4 @@ main = interact showSolution
     tableP1 = [[binary "+" (+) AssocLeft, binary "*" (*) AssocLeft]]
     tableP2 = [[binary "+" (+) AssocLeft], [binary "*" (*) AssocLeft]]
     solve table = lines >>> traverse (parseString (expr table) mempty) >>> fmap sum >>> show
-    showSolution s = show $ "p1: " <> (solve tableP1 s) <> "p2: " <> (solve tableP2 s)
+    showSolution s = show $ "p1: " <> solve tableP1 s <> "p2: " <> solve tableP2 s
