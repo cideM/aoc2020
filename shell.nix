@@ -11,6 +11,7 @@ nixpkgs.mkShell {
     nixpkgs.entr
     nixpkgs.lua53Packages.luacheck
     nixpkgs.clojure
+    fast-tags
     hoogle
   ] ++ (if nixpkgs.stdenv.isDarwin == false then [ nixpkgs.clj-kondo ] else [ ]);
 }
