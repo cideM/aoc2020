@@ -6,7 +6,6 @@
 
 import Control.Monad (msum)
 import Data.Bifunctor (second)
-import Data.Function ((&))
 import Data.List (foldl1', sortOn)
 import Data.List.Extra (groupOn, splitOn, transpose)
 import Data.Map.Strict (Map)
@@ -75,12 +74,14 @@ isMonster (x, y) m =
     check pos = M.lookup pos m >>= \c -> if c == '#' then Just c else Nothing
 
 solve :: String -> String
-solve input =
-  let tiles = lines input & splitOn [""] & map makeTile
-      arranged = puzzle tiles
-      solutionP1 = p1 arranged
-      solutionP2 = p2 arranged
-   in show $ "p1 " <> solutionP1 <> " p2 " <> solutionP2
+solve =
+  lines
+    .> splitOn [""]
+    .> map makeTile
+    .> puzzle
+    .> pure
+    .> (<*>) [p1, p2]
+    .> unlines
   where
     p2 =
       mergeTiles .> findMonstersInGrid .> \case
