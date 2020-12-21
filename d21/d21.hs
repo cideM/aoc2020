@@ -12,19 +12,17 @@ import qualified Data.Map.Strict as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Flow
-import qualified Text.Trifecta as Tri
+import Text.Trifecta
 
 type Ingredient = String
 
 type Allergen = String
 
-lineParser :: Tri.Parser (Set Ingredient, Set Allergen)
-lineParser = do
-  ingredients <- Set.fromList <$> Tri.some Tri.letter `Tri.sepEndBy` Tri.space
-  _ <- Tri.symbol "(contains"
-  allergens <- Set.fromList <$> Tri.some Tri.letter `Tri.sepBy` Tri.comma
-  _ <- Tri.symbol ")"
-  return (ingredients, allergens)
+lineParser :: Parser (Set Ingredient, Set Allergen)
+lineParser = (,) <$> ingredientParser <*> (symbol "(contains" *> allergenParser <* symbol ")")
+  where
+    ingredientParser = Set.fromList <$> (some letter `sepEndBy` space)
+    allergenParser = Set.fromList <$> (some letter `sepBy` comma)
 
 mapAllergensToIngredients ::
   Map Allergen (Set Ingredient) ->
@@ -36,43 +34,38 @@ mapAllergensToIngredients accumulator (ingredients, allergens) =
     |> Map.fromList
     |> Map.unionWith Set.intersection accumulator
 
-p1 :: Set Ingredient -> Map Ingredient Int -> String
-p1 unsafeIngredients =
-  Map.assocs
-    .> filter (fst .> flip Set.notMember unsafeIngredients)
-    .> map snd
-    .> sum
-    .> show
+p1 :: [(Set Ingredient, Set Allergen)] -> String
+p1 linesParsed =
+  let unsafeIngredients =
+        foldl' mapAllergensToIngredients Map.empty linesParsed |> Map.elems |> Set.unions
+   in linesParsed
+        |> map (fst .> Set.toList .> flip zip (repeat (1 :: Int)) .> Map.fromList)
+        |> Map.unionsWith (+)
+        |> flip Map.withoutKeys unsafeIngredients
+        |> Map.foldl' (+) 0
+        |> show
 
-p2 :: Map Allergen (Set Ingredient) -> String
-p2 =
-  Map.assocs
-    .> until (productOn' (snd .> Set.size) .> (==) 1) makeExact
-    .> sortOn fst
-    .> map (snd .> Set.toList .> head)
-    .> intercalate ","
+p2 :: [(Set Ingredient, Set Allergen)] -> String
+p2 linesParsed =
+  foldl' mapAllergensToIngredients Map.empty linesParsed
+    |> Map.assocs
+    |> until (productOn' (snd .> Set.size) .> (==) 1) makeExact
+    |> sortOn fst
+    |> map (snd .> Set.toList .> head)
+    |> intercalate ","
   where
-    makeExact :: [(Allergen, Set Ingredient)] -> [(Allergen, Set Ingredient)]
     makeExact assocs =
       let (exact, rest) = assocs |> partition (snd .> Set.size .> (==) 1)
-          solvedIngredients = exact |> map snd |> Set.unions
-          rest' = rest |> map (second (`Set.difference` solvedIngredients))
-       in exact ++ rest'
+          solvedIngredients = map snd exact |> Set.unions
+       in exact ++ map (second (`Set.difference` solvedIngredients)) rest
 
 solve :: String -> String
 solve =
   lines
-    .> traverse (Tri.parseString lineParser mempty)
+    .> traverse (parseString lineParser mempty)
     .> \case
-      Tri.Failure e -> show e |> error
-      Tri.Success linesParsed ->
-        let occurences =
-              linesParsed
-                |> map (fst .> Set.toList .> flip zip (repeat 1) .> Map.fromList)
-                |> Map.unionsWith (+)
-            allergenToIngredients = foldl' mapAllergensToIngredients Map.empty linesParsed
-            unsafeIngredients = Map.elems allergenToIngredients |> Set.unions
-         in [p1 unsafeIngredients occurences, p2 allergenToIngredients] |> unlines
+      Failure e -> show e |> error
+      Success linesParsed -> [p1 linesParsed, p2 linesParsed] |> unlines
 
 main :: IO ()
 main = interact solve
