@@ -47,7 +47,6 @@ p1 unsafeIngredients =
 p2 :: Map Allergen (Set Ingredient) -> String
 p2 =
   Map.assocs
-    .> sortOn (snd .> length)
     .> until (productOn' (snd .> Set.size) .> (==) 1) makeExact
     .> sortOn fst
     .> map (snd .> Set.toList .> head)
